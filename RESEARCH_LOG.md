@@ -20,3 +20,20 @@ This file tracks all research, search queries, and AI interactions used througho
 ### Resource Links
 - **Architecture Workspace:** [Eraser.io - DCS Job Portal](https://app.eraser.io/)
 - **Documentation:** [Next.js Installation Guide](https://nextjs.org/docs/getting-started/installation)
+
+# 📚 Research & Learning Log: Day 2
+
+| Date | Topic / Query | Source | Outcome / Decision |
+| :--- | :--- | :--- | :--- |
+| Feb 23, 2026 | "Next.js Middleware not logging or triggering" | Troubleshooting / Next.js Docs | **Doubt Resolution:** Realized that placing `middleware.ts` inside the `/app` folder caused it to be ignored. Relocated to the root directory and performed a server restart. |
+| Feb 23, 2026 | HTTP-Only Cookie Security | MDN Web Docs | Implemented `httpOnly: true` in Server Actions to prevent client-side script access, significantly reducing XSS (Cross-Site Scripting) attack surface. |
+| Feb 23, 2026 | "Real-time redirect after manual cookie deletion" | User Query / Architecture | **Doubt Resolution:** Middleware only runs on requests. To handle manual browser-tab deletions, I implemented a client-side "Heartbeat Watcher" in the AuthContext. |
+| Feb 23, 2026 | Node.js Backend Architecture | Piyush Garg (Tutorial Series) | Reviewed Express.js routing and middleware patterns. Chose a modular "Controller-Route" pattern for the backend to maintain clean code. |
+| Feb 23, 2026 | "Why use initialUser in the Root Layout?" | User Query / Hydration | **Doubt Resolution:** Explained the concept of "Hydration." Using server-side cookies to populate client-side context prevents the "flash of unauthenticated content" on refresh. |
+| Feb 23, 2026 | "JSON.parse error: undefined is not valid JSON" | Debugging / Stack Overflow | **Doubt Resolution:** Identified that `JSON.stringify(undefined)` creates a corrupt string. Implemented a "Nuclear Option" with `try-catch` blocks and defensive parsing. |
+| Feb 23, 2026 | MongoDB Schema Modeling | Piyush Garg (Mongoose Guide) | Decided to use Mongoose to enforce data integrity. Planned a `User` schema with Enum-based roles to distinguish between Candidates and Recruiters. |
+| Feb 23, 2026 | RESTful API Conventions | REST API Tutorial | Established a standard for the Decision Companion API endpoints using plural nouns and proper HTTP verbs (e.g., `POST /api/jobs`). |
+
+### Resource Links
+- **YouTube Tutorials:** [Piyush Garg - Node.js Series](https://www.youtube.com/playlist?list=PLinedj3B30sDby4Al-i13hQJGQoH87fXk)
+- **Database Guide:** [Piyush Garg - MongoDB & Mongoose](https://www.youtube.com/watch?v=l_W76D0BstM)
