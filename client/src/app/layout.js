@@ -1,4 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import { AuthContextProvider } from "@/context/AuthContext";
+import { cookieGetter } from "@/lib/cookiesetter";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,12 +19,29 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const session = cookieGetter('COOKIE');
+  
+  let initialUser = null;
+
+  // The "Nuclear Option" for safety
+  if (session && session.value) {
+    try {
+      // Only parse if it looks like a JSON object
+      if (session.value.startsWith('{')) {
+        initialUser = JSON.parse(session.value);
+      }
+    } catch (e) {
+      console.error("Auth hydration failed. Clearing corrupt state.");
+      initialUser = null;
+    }
+  }
+
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className="antialiased">
+        <AuthContextProvider initialUser={initialUser}>
+          {children}
+        </AuthContextProvider>
       </body>
     </html>
   );
