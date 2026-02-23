@@ -35,5 +35,5 @@ This file tracks all research, search queries, and AI interactions used througho
 | Feb 23, 2026 | RESTful API Conventions | REST API Tutorial | Established a standard for the Decision Companion API endpoints using plural nouns and proper HTTP verbs (e.g., `POST /api/jobs`). |
 
 ### Resource Links
-- **YouTube Tutorials:** [Piyush Garg - Node.js Series](https://www.youtube.com/playlist?list=PLinedj3B30sDby4Al-i13hQJGQoH87fXk)
-- **Database Guide:** [Piyush Garg - MongoDB & Mongoose](https://www.youtube.com/watch?v=l_W76D0BstM)
+- **YouTube Tutorials:** [Piyush Garg - Node.js Series](https://www.youtube.com/watch?v=ohIAiuHMKMI&list=PLinedj3B30sDby4Al-i13hQJGQoRQDfPo)
+- **Database Guide:** [Piyush Garg - MongoDB & Mongoose](https://www.youtube.com/watch?v=xrglM8U0Zv8&list=PLinedj3B30sDby4Al-i13hQJGQoRQDfPo&index=19)
