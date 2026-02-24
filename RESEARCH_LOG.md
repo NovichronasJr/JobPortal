@@ -37,3 +37,21 @@ This file tracks all research, search queries, and AI interactions used througho
 ### Resource Links
 - **YouTube Tutorials:** [Piyush Garg - Node.js Series](https://www.youtube.com/watch?v=ohIAiuHMKMI&list=PLinedj3B30sDby4Al-i13hQJGQoRQDfPo)
 - **Database Guide:** [Piyush Garg - MongoDB & Mongoose](https://www.youtube.com/watch?v=xrglM8U0Zv8&list=PLinedj3B30sDby4Al-i13hQJGQoRQDfPo&index=19)
+
+# 📚 Research & Learning Log: Day 3
+
+| Date | Topic / Query | Source | Outcome / Decision |
+| :--- | :--- | :--- | :--- |
+| Feb 24, 2026 | Modular Express Routing | Express.js Documentation | **Decision:** Implemented a modular `auth_route.js` using `express.Router()` to decouple authentication logic from the main server entry point, ensuring scalability as the Decision Companion grows. |
+| Feb 24, 2026 | "Multer: Dynamic storage based on fieldname" | Multer Storage Engine Docs | **Doubt Resolution:** Configured `diskStorage` with conditional logic to route files into role-specific directories: Resumes to `/candidate/resume` and Logos to `/recruiter/logo`. |
+| Feb 24, 2026 | LangChain & AI Parsing Research | LangChain / Self-Experimentation | **Research Note:** Successfully tested `pdf-parse` and `RecursiveCharacterTextSplitter`. Verified that in-memory vector stores and prompts can handle job-matching before full database implementation. |
+| Feb 24, 2026 | "TypeError: next is not a function" in Mongoose | Troubleshooting / Mongoose Docs | **Doubt Resolution:** Identified that `async` functions in Mongoose `pre-save` hooks handle promise resolution natively. Removed the `next()` call to fix the 500 Internal Server Error. |
+| Feb 24, 2026 | Cross-Origin Resource Sharing (CORS) | MDN Web Docs | Resolved port mismatch blocks (3000 vs 8001) by whitelisting the Next.js origin and enabling `credentials: true` for secure cookie transmission. |
+| Feb 24, 2026 | Git Monorepo Consolidation | Git Documentation | **Doubt Resolution:** Used `git rm -r --cached` to remove nested `.git` submodules. Successfully unified the project into a single repository without losing historical commit data. |
+| Feb 24, 2026 | Static Asset Serving in Express | Express Middleware Guide | Implemented `express.static` for the `/public` directory. Established a fallback logic for `default_pics` to ensure a consistent UI for new Candidate and Recruiter profiles. |
+| Feb 24, 2026 | Multipart Form Data Handling | Web API / Fetch Docs | **Decision:** Transitioned the frontend signup logic from JSON to `FormData` to allow the parallel transmission of profile metadata and physical files (Resumes/Logos). |
+
+### Resource Links
+- **Middleware Mechanics:** [Multer Disk Storage Engine](https://github.com/expressjs/multer#diskstorage)
+- **AI Foundations:** [LangChain JS](https://js.langchain.com/docs/modules/data_connection/document_transformers/)
+- **Mongoose Hooks:** [Async/Await in Middleware](https://mongoosejs.com/docs/middleware.html#pre)
