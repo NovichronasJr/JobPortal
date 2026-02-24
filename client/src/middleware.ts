@@ -6,7 +6,7 @@ export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const sessionToken = request.cookies.get('COOKIE')?.value;
 
-  const isPublicPath = path === '/auth/login' || path === '/signup';
+  const isPublicPath = path === '/auth/login' || path === '/auth/signup';
 
   
   if (!sessionToken && !isPublicPath) {

@@ -1,0 +1,9 @@
+
+backend/node_modules/
+
+backend/.env
+
+
+backend/public/candidate/resume/*
+backend/public/recruiter/logo/*
+!backend/public/default_pics/

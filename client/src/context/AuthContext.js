@@ -1,54 +1,80 @@
+
 "use client";
 import { useContext, createContext, useEffect, useState } from "react";
-import { checkCookie, deleteCookie } from "@/lib/cookiesetter";
-import { useRouter, usePathname } from "next/navigation";
+import { cookieGetter, deleteCookie, checkCookie } from "@/lib/cookiesetter";
+import { usePathname, useRouter } from "next/navigation";
 
 const AuthContext = createContext();
 
-export const AuthContextProvider = ({ children, initialUser }) => {
-    const [user, setUser] = useState(initialUser);
-    const router = useRouter();
+export const AuthContextProvider = ({ children }) => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
     const pathname = usePathname();
+    const router = useRouter();
 
     useEffect(() => {
-      console.log("LOG: AuthGuard Effect Mounted"); 
+        const hydrateUser = async () => {
+            try {
+                const session = await cookieGetter();
+                
+                if (!session?.token) {
+                    if (pathname !== "/auth/login" && pathname !== "/auth/signup") {
+                        router.replace("/auth/login");
+                    }
+                    return;
+                }
+
+                const res = await fetch("http://localhost:8001/auth/me", {
+                    headers: { Authorization: `Bearer ${session.token}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    setUser(data.user);
+                } else {
+                    await Logout();
+                }
+            } catch (err) {
+                console.error("Hydration failed", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        hydrateUser();
+    }, [pathname]);
+
   
-      const syncSession = async () => {
-          console.log("LOG: Heartbeat check at", new Date().toLocaleTimeString());
-          try {
-              const isLogged = await checkCookie();
-              console.log("LOG: Server says isLogged =", isLogged);
-  
-              if (!isLogged && pathname !== "/auth/login") {
-                  console.log("LOG: Redirecting... Session is dead.");
-                  setUser(null);
-                  window.location.href = '/auth/login';
-              }
-          } catch (err) {
-              console.error("LOG: Error in syncSession:", err);
-          }
-      };
-  
-      const interval = setInterval(syncSession, 2000);
-      
-      return () => {
-          console.log("LOG: AuthGuard Effect Unmounted");
-          clearInterval(interval);
-      };
-  }, [pathname]); 
-       
+    useEffect(() => {
+        const syncSession = async () => {
+            const isLogged = await checkCookie();
+            
+            
+            if (!isLogged && user !== null) {
+                console.log("LOG: Session detected as dead via heartbeat.");
+                setUser(null);
+                
+                if (pathname !== "/auth/login" && pathname !== "/auth/signup") {
+                    
+                    window.location.href = '/auth/login'; 
+                }
+            }
+        };
+
+        const interval = setInterval(syncSession, 2000);
+        return () => clearInterval(interval);
+    }, [user, pathname]); 
 
     const Logout = async () => {
-        const result = await deleteCookie();
-        if (result.message === "deleted cookie") {
-            setUser(null);
-            window.location.href = '/auth/login';
-        }
+        await deleteCookie();
+        setUser(null);
+        window.location.href = '/auth/login';
     };
 
     return (
-        <AuthContext.Provider value={{ user, setUser, Logout }}>
-            {children}
+        <AuthContext.Provider value={{ user, setUser, Logout, loading }}>
+            {/* We show children once we've checked the session initially */}
+            {!loading && children} 
         </AuthContext.Provider>
     );
 };

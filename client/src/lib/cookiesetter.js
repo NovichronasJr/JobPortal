@@ -1,15 +1,18 @@
 "use server"
 import { cookies } from "next/headers";
 
-// Use named exports instead of multiple defaults
+/**
+
+ * @param {Object} params 
+ */
 export async function cookieSetter(params) {
   const cookieStore = await cookies();
 
-  const { name, email, role } = params;
+  const { token, user } = params;
 
   await cookieStore.set({
     name: 'COOKIE',
-    value: JSON.stringify({ name, email, role }),
+    value: JSON.stringify({ token, user }),
     httpOnly: true, 
     secure: process.env.NODE_ENV === 'production', 
     maxAge: 60 * 60 * 24,
@@ -30,7 +33,17 @@ export async function deleteCookie() {
   return { message: "deleted cookie" };
 }
 
-export async function cookieGetter(cookie_name){
+
+export async function cookieGetter() {
     const cookieStore = await cookies();
-    return await cookieStore.get(cookie_name)
+    const cookie = cookieStore.get('COOKIE');
+    
+    if (!cookie) return null;
+    
+    try {
+        return JSON.parse(cookie.value);
+    } catch (error) {
+        console.error("Failed to parse session cookie:", error);
+        return null;
+    }
 }
