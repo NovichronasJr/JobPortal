@@ -55,3 +55,19 @@ This file tracks all research, search queries, and AI interactions used througho
 - **Middleware Mechanics:** [Multer Disk Storage Engine](https://github.com/expressjs/multer#diskstorage)
 - **AI Foundations:** [LangChain JS](https://js.langchain.com/docs/modules/data_connection/document_transformers/)
 - **Mongoose Hooks:** [Async/Await in Middleware](https://mongoosejs.com/docs/middleware.html#pre)
+
+
+# 📚 Research & Learning Log: Day 4
+
+| Date | Topic / Query | Source | Outcome / Decision |
+| :--- | :--- | :--- | :--- |
+| Feb 25, 2026 | Industry UX Analysis (LinkedIn/Indeed) | Competitive Research | **Research Note:** Analyzed LinkedIn's filtering architecture. **Decision:** Implemented a "Marketplace" feel where filters are secondary to the "Match Score," prioritizing AI-driven discovery over manual searching. |
+| Feb 25, 2026 | Layout Orchestration in Next.js | Next.js Docs | **Outcome:** Mastered the use of `layout.jsx` to maintain persistent UI elements (Sidebars) across route changes, ensuring a smooth, single-page application (SPA) experience. |
+| Feb 25, 2026 | Dummy Data Architecture | Prototype Development | **Decision:** Built a robust `dummyJobs` array to simulate production environments. Used this to stress-test the UI for various roles (MERN, Cybersec, Data Science) before full backend implementation. |
+| Feb 25, 2026 | Dynamic Filter Logic & Importance | Logic Experimentation | **Outcome:** Successfully implemented state-driven filtering. Verified that the platform can handle complex intersections (e.g., finding jobs that require *both* React and Node.js) in real-time. |
+| Feb 25, 2026 | Defensive JSON Handling | Debugging Session | **Bug Fix:** Resolved a race condition where `JSON.parse` crashed on empty cookies during logout re-renders. Implemented string-validation checks to ensure 100% stability during session transitions. |
+
+### Resource Links
+- **Routing Patterns:** [Next.js Persistent Layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts)
+- **Competitive Design:** [LinkedIn Job Search](https://www.linkedin.com/jobs/)
+- **JavaScript Safety:** [Defensive JSON Parsing](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse)
