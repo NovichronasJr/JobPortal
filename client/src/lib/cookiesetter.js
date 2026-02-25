@@ -35,15 +35,24 @@ export async function deleteCookie() {
 
 
 export async function cookieGetter() {
-    const cookieStore = await cookies();
-    const cookie = cookieStore.get('COOKIE');
-    
-    if (!cookie) return null;
-    
-    try {
-        return JSON.parse(cookie.value);
-    } catch (error) {
-        console.error("Failed to parse session cookie:", error);
-        return null;
-    }
+  const cookieStore = await cookies();
+  const cookie = cookieStore.get('COOKIE');
+  
+  if (!cookie) return null;
+  
+  if (!cookie.value || cookie.value.trim() === "" || cookie.value === "undefined") {
+      return null;
+  }
+  
+  try {
+
+      if (cookie.value.startsWith('{') || cookie.value.startsWith('[')) {
+          return JSON.parse(cookie.value);
+      }
+      
+      return null; 
+  } catch (error) {
+      console.error("Session data corrupted, clearing reference.");
+      return null;
+  }
 }

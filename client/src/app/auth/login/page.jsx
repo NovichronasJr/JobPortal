@@ -40,7 +40,12 @@ export default function SignInPage() {
       });
 
       
-      router.replace("/");
+      if(role === "candidate")
+      {
+        router.replace("/api/candidate");
+      }else{
+        router.replace("/");
+      }
       
     } catch (err) {
       console.error("Login error:", err.message);
