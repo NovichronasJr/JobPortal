@@ -71,3 +71,24 @@ This file tracks all research, search queries, and AI interactions used througho
 - **Routing Patterns:** [Next.js Persistent Layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts)
 - **Competitive Design:** [LinkedIn Job Search](https://www.linkedin.com/jobs/)
 - **JavaScript Safety:** [Defensive JSON Parsing](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse)
+
+
+# 📚 Research & Learning Log: Day 5
+
+| Date | Topic / Query | Source | Outcome / Decision |
+| :--- | :--- | :--- | :--- |
+| Aug 26, 2026 | Cross-Origin Asset Pipeline | System Design | **Challenge:** Managing file replacement on a remote server from a local frontend. **Fix:** Implemented `path.resolve` and `fs.unlinkSync` to purge old assets from disk upon new uploads, preventing storage bloat. |
+| Aug 26, 2026 | The Browser as a Middleware | Network Architecture | **Insight:** Analyzed how the Browser acts as a "Courier" between a local Host (Next.js) and Cloud Backend (Express) regardless of physical distance. **Decision:** Enforced `credentials: 'include'` and CORS `credentials: true` to allow automatic cookie delivery across different origins. |
+| Aug 26, 2026 | Middleware Authorization Guard | Backend Security | **Outcome:** Developed a custom `protect` middleware to intercept requests, extract JWTs from nested cookie objects, and hydrate `req.user` before reaching sensitive routes. |
+| Aug 26, 2026 | Auth Context Hydration | React State Mgmt | **Challenge:** Stale resume previews after updates (404 errors) due to frontend not knowing the new file path. **Fix:** Exposed a global `checkUser` function in `AuthContext` to trigger a silent re-fetch of the user profile immediately after a successful PUT request. |
+| Aug 26, 2026 | Multer Field Normalization | Debugging Session | **Bug Fix:** Resolved `MulterError: Unexpected field` by synchronizing casing (lowercase `profilephoto`) between Frontend `FormData` and Backend `upload.fields` middleware. |
+
+### 🛠️ Challenges & Technical Solutions
+* **The "JWT Malformed" Ghost:** We discovered that storing the token inside a stringified JSON cookie caused the backend to fail during parsing. We fixed this by teaching the middleware to `JSON.parse` the cookie before verification.
+* **Distributed Cookie Handshake:** Learned that even if the backend is in the cloud and the frontend is local, the **Browser** manages the session delivery automatically, provided the security gates (CORS/Credentials) are unlocked.
+
+### 🔗 Resource Links
+* **Routing & Logic:** [Next.js App Router Documentation](https://nextjs.org/docs)
+* **Session Management:** [npm: cookie-parser](https://www.npmjs.com/package/cookie-parser)
+* **File Streaming:** [Multer Field Documentation](https://www.npmjs.com/package/multer#fieldsfields)
+* **Security Standards:** [MDN: Using HTTP Cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies)
