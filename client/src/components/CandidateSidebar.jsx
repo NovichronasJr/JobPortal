@@ -19,7 +19,7 @@ export default function CandidateSidebar() {
 
   // 2. Image Logic (Consistent with Dashboard)
   const imageUrl = useMemo(() => {
-    const rawPath = user?.profile_pic;
+    const rawPath = user?.profile?.profilePhoto;
     if (!rawPath) return `${BACKEND_URL}/default_pics/candidate.jpg`;
     return rawPath.startsWith("http") 
       ? rawPath 

@@ -37,7 +37,7 @@ export default function CandidateDashboard() {
 
   // 2. Dynamic Image & Identity Logic
   const imageUrl = useMemo(() => {
-    const rawPath = user?.profile_pic;
+    const rawPath = user?.profile?.profilePhoto;
     if (!rawPath) return `${BACKEND_URL}/default_pics/candidate.jpg`;
     return rawPath.startsWith("http") 
       ? rawPath 

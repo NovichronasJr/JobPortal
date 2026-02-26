@@ -5,54 +5,7 @@ const Recruiter = require('../database/models/recruiter_model');
 const jwt = require('jsonwebtoken');
 const upload = require('../configs/multer_config'); 
 
-// --- SIGNUP LOGIC ---
-// We use your imported 'upload' to handle the incoming multipart/form-data
-// router.post('/signup', upload.fields([
-//     { name: 'resume', maxCount: 1 },
-//     { name: 'logo', maxCount: 1 }
-// ]), async (req, res) => {
-//     try {
-//         const { email, password, role, ...profileData } = req.body;
 
-        
-//         const existingUser = await User.findOne({ email });
-//         if (existingUser) return res.status(400).json({ message: "User already exists" });
-
-      
-//         const newUser = new User({ email, password, role });
-//         const savedUser = await newUser.save();
-
-        
-//         const resumePath = req.files['resume'] 
-//             ? req.files['resume'][0].path.replace(/\\/g, '/').replace('public/', '') 
-//             : null;
-            
-//         const logoPath = req.files['logo'] 
-//             ? req.files['logo'][0].path.replace(/\\/g, '/').replace('public/', '') 
-//             : null;
-
-        
-//         let profile;
-//         if (role === 'candidate') {
-//             profile = new Candidate({
-//                 user: savedUser._id,
-//                 ...profileData,
-//                 resumeUrl: resumePath 
-//             });
-//         } else {
-//             profile = new Recruiter({
-//                 user: savedUser._id,
-//                 ...profileData,
-//                 organizationLogo: logoPath 
-//             });
-//         }
-//         await profile.save();
-
-//         res.status(201).json({ message: "Account created successfully!" });
-//     } catch (err) {
-//         res.status(500).json({ message: "Signup failed", error: err.message });
-//     }
-// });
 router.post('/signup', (req, res, next) => {
     console.log("LOG: 1. Request reached /signup");
     next();

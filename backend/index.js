@@ -1,6 +1,8 @@
 const express = require('express');
 const auth_router = require('./routes/auth_route');
+const candidate_router = require('./routes/candidate_route');
 const connection = require('./database/Connection');
+const cookieParser = require('cookie-parser');
 const path = require('path');
 const cors = require('cors');
 
@@ -19,8 +21,12 @@ app.use(cors({
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
+
 
 app.use('/auth',auth_router);
+app.use('/api/candidate',candidate_router);
+
 
 
 app.get('/',(req,res)=>{
