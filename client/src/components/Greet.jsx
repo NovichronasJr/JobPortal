@@ -63,7 +63,7 @@ export default function Greet({ cookie_value }) {
       </div>
 
       <Link 
-        href={isCandidate ? "/api/candidate" : "/"} 
+        href={isCandidate ? "/api/candidate" : "/api/recruiter"} 
         prefetch={false}
         className="group flex items-center justify-between w-full p-4 rounded-2xl bg-slate-800/50 border border-slate-700 hover:border-blue-500/50 hover:bg-slate-800/80 transition-all duration-300"
       >
