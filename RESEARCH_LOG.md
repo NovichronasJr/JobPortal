@@ -92,3 +92,19 @@ This file tracks all research, search queries, and AI interactions used througho
 * **Session Management:** [npm: cookie-parser](https://www.npmjs.com/package/cookie-parser)
 * **File Streaming:** [Multer Field Documentation](https://www.npmjs.com/package/multer#fieldsfields)
 * **Security Standards:** [MDN: Using HTTP Cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies)
+
+
+# 📚 Research & Learning Log: Day 6
+
+| Date | Topic / Query | Source | Outcome / Decision |
+| :--- | :--- | :--- | :--- |
+| Feb 27, 2026 | LLM Resume Extraction (Mistral/Gemini) | AI Implementation | **Research Note:** Analyzed the efficiency of zero-shot prompting for entity extraction. **Decision:** Integrated an LLM-based parser to translate raw PDF text into structured JSON arrays for tech-stacks, significantly reducing user manual entry. |
+| Feb 27, 2026 | Conversational AI Agent Persona | UX Strategy | **Outcome:** Designed the "Gemini Intelligence" persona. **Decision:** Shifted from dry, corporate labeling to "Peaceful AI" dialogue (e.g., "secret sauce," "gut check") to lower recruiter friction and encourage higher-quality data input. |
+| Feb 27, 2026 | Trigger-Based Agent Activation | UX Engineering | **Outcome:** Implemented a contextual trigger on the 'Location' field. **Decision:** The AI agent only appears after public data is entered, preventing "Information Overload" and ensuring the recruiter is in a "Strategic State" before asking for hidden weightage. |
+| Feb 27, 2026 | Agentic Workflow Optimization | Model Interaction | **Decision:** Implemented a multi-step "Chatbot" flow for job weightage. **Outcome:** Verified that breaking down AI parameters into single, bite-sized questions increases completion rates compared to long-form configuration menus. |
+| Feb 27, 2026 | JSON-in-FormData Serialization | Debugging Session | **Bug Fix:** Resolved data-loss issue where Nested Objects (Education/Experience) were lost during file uploads. **Decision:** Implemented client-side `JSON.stringify` and server-side `JSON.parse` to preserve complex metadata structures across the API. |
+
+### Resource Links
+- **Prompt Engineering:** [Conversational Design Patterns for LLMs](https://www.nngroup.com/articles/ai-conversational-ui/)
+- **UI Interaction:** [Framer Motion AnimatePresence Documentation](https://www.framer.com/motion/animate-presence/)
+- **Data Integrity:** [Handling Nested Objects in Multipart Form-Data](https://developer.mozilla.org/en-US/docs/Web/API/FormData/Using_FormData_Objects)
