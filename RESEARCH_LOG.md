@@ -108,3 +108,20 @@ This file tracks all research, search queries, and AI interactions used througho
 - **Prompt Engineering:** [Conversational Design Patterns for LLMs](https://www.nngroup.com/articles/ai-conversational-ui/)
 - **UI Interaction:** [Framer Motion AnimatePresence Documentation](https://www.framer.com/motion/animate-presence/)
 - **Data Integrity:** [Handling Nested Objects in Multipart Form-Data](https://developer.mozilla.org/en-US/docs/Web/API/FormData/Using_FormData_Objects)
+
+
+# 📚 Research & Learning Log: Day 7
+
+| Date | Topic / Query | Source | Outcome / Decision |
+| :--- | :--- | :--- | :--- |
+| Feb 28, 2026 | Domain-Specific Context Separation | React Architecture | **Research Note:** Evaluated single vs. multiple Context Providers for role-based data. **Decision:** Split into `RecruiterJobContext` and `CandidateJobContext` to ensure data isolation, security, and reduced re-render cycles across dashboard routes. |
+| Feb 28, 2026 | Next.js Cache & Revalidation | Performance Engineering | **Outcome:** Integrated `next: { revalidate: 60 }` for job fetching. **Decision:** Implemented a "Hybrid Cache" approach where regular navigation uses cached data, but a `refreshJobs(true)` flag forces a `no-store` fetch specifically after new job deployments to ensure instant UI updates. |
+| Feb 28, 2026 | Proactive AI "Observer" Pattern | System Design | **Outcome:** Designed a companion logic that monitors `applicantCount` vs `maxPositions`. **Decision:** Instead of passive data display, the AI now proactively suggests deadline extensions (via `PUT` requests) if hiring targets aren't met by the deadline date. |
+| Feb 28, 2026 | LCP Bottleneck Analysis | QA / Optimization | **Bug Fix:** Identified a 7550ms Largest Contentful Paint (LCP) via Lighthouse. **Decision:** Refactored the dashboard to use **Server Components** for the static "Hero" section (immediate paint) while isolating the interactive Grid as a **Client Component** to fix hydration delays. |
+| Feb 28, 2026 | Mongoose `.populate()` & `.lean()` | Data Integrity | **Outcome:** Optimized the "Live Inventory" feed. **Decision:** Used `.populate('recruiterId')` to dynamically inject company logos into job cards and utilized `.lean()` to bypass Mongoose overhead, returning plain JS objects for faster frontend mapping. |
+
+### Resource Links
+- **State Management:** [React Context API Best Practices](https://react.dev/learn/passing-data-deeply-with-context)
+- **Performance:** [Next.js Data Fetching, Caching, and Revalidating](https://nextjs.org/docs/app/building-your-application/data-fetching/fetching-caching-and-revalidating)
+- **Design Patterns:** [The Observer Pattern in Proactive UI](https://refactoring.guru/design-patterns/observer)
+- **Optimization:** [Lighthouse: Largest Contentful Paint (LCP) Fixes](https://web.dev/articles/lcp)
