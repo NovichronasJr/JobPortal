@@ -96,3 +96,23 @@ export const dummyJobs = [
     logo: "https://api.dicebear.com/7.x/initials/svg?seed=Alpha"
   }
 ];
+
+
+export const JOB_CATEGORIES = [
+  "Software Developer",
+  "Frontend Development",
+  "Backend Development",
+  "Full Stack Development",
+  "Mobile App Development",
+  "Cybersecurity",
+  "Data Analyst",
+  "Data Scientist",
+  "Machine Learning Engineer",
+  "Cloud Architect",
+  "DevOps Engineer",
+  "UI/UX Designer",
+  "Product Manager",
+  "Embedded Systems",
+  "Blockchain Developer",
+  "Quality Assurance (QA)"
+];

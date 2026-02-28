@@ -29,4 +29,26 @@ const protect = async (req, res, next) => {
     }
 };
 
-module.exports = { protect };
+const authorize = (...roles) => {
+    return (req, res, next) => {
+        // req.user was set by your 'protect' middleware
+        if (!req.user) {
+            return res.status(401).json({ 
+                success: false, 
+                message: "Authentication required before authorization." 
+            });
+        }
+
+        // Check if the user's role is included in the allowed roles array
+        if (!roles.includes(req.user.role)) {
+            return res.status(403).json({ 
+                success: false, 
+                message: `Access Denied: Role '${req.user.role}' is not authorized for this resource.` 
+            });
+        }
+
+        next();
+    };
+};
+
+module.exports = { protect,authorize};

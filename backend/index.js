@@ -1,6 +1,7 @@
 const express = require('express');
 const auth_router = require('./routes/auth_route');
 const candidate_router = require('./routes/candidate_route');
+const recruiter_router = require('./routes/recruiter_route');
 const connection = require('./database/Connection');
 const cookieParser = require('cookie-parser');
 const path = require('path');
@@ -26,6 +27,7 @@ app.use(cookieParser());
 
 app.use('/auth',auth_router);
 app.use('/api/candidate',candidate_router);
+app.use('/api/recruiter',recruiter_router);
 
 
 

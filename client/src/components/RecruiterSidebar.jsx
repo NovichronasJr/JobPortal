@@ -30,7 +30,7 @@ export default function RecruiterSidebar() {
   const navItems = [
     { name: "Dashboard", href: "/api/recruiter", icon: <LayoutDashboard size={20} /> },
     { name: "Post a New Job", href: "/api/recruiter/postjob", icon: <PlusCircle size={20} /> },
-    { name: "Active Openings", href: "/api/recruiter/activejobs", icon: <Briefcase size={20} /> },
+    { name: "Active/Inactive Openings", href: "/api/recruiter/openings", icon: <Briefcase size={20} /> },
     { name: "Shortlisted", href: "/api/recruiter/shortlisted", icon: <Heart size={20} /> },
   ];
 
