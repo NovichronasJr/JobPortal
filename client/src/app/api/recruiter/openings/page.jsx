@@ -2,6 +2,7 @@
 import React from "react";
 import { useRecruiterJob } from "@/context/RecruiterJobContext";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { 
   MapPin, Clock, Users, 
   Target, Briefcase, 
@@ -39,7 +40,6 @@ export default function RecruiterJobs() {
 
   return (
     <div className="p-10 lg:p-16 max-w-[1600px] mx-auto min-h-screen">
-      {/* HEADER: PRO STYLE */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16">
         <div className="space-y-2">
           <div className="flex items-center gap-3 text-indigo-500 mb-2">
@@ -59,7 +59,7 @@ export default function RecruiterJobs() {
         </button>
       </header>
 
-      {/* THE BENTO GRID */}
+      {/* --- UPDATED GRID: h-full ensures all motion.divs stretch --- */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
         {jobs.map((job, index) => (
           <motion.div 
@@ -68,22 +68,20 @@ export default function RecruiterJobs() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.05, type: "spring", stiffness: 100 }}
-            className="group relative"
+            className="group relative h-full"
           >
-            {/* BACKGROUND GLOW EFFECT */}
             <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-[3rem] blur opacity-0 group-hover:opacity-10 transition duration-1000 group-hover:duration-200" />
             
-            <div className="relative bg-slate-950/80 backdrop-blur-3xl border border-slate-800/50 rounded-[3rem] overflow-hidden transition-all duration-500 group-hover:border-indigo-500/40 group-hover:translate-y-[-8px]">
+            {/* --- FLEX CONTAINER: h-full + flex-col stretches the card --- */}
+            <div className="relative h-full flex flex-col bg-slate-950/80 backdrop-blur-3xl border border-slate-800/50 rounded-[3rem] overflow-hidden transition-all duration-500 group-hover:border-indigo-500/40 group-hover:translate-y-[-8px]">
               
-              {/* TOP SECTION: THE BEAUTIFUL LOGO CONTAINER */}
               <div className="p-8 pb-0 flex justify-between items-start">
                 <div className="w-20 h-20 rounded-[1.8rem] bg-white relative overflow-hidden shadow-[0_10px_40px_rgba(255,255,255,0.1)] group-hover:scale-105 transition-transform duration-700">
                   <img 
-                    src={`${BACKEND_URL}/${job.recruiterId?.organizationLogo}` || "/placeholder.png"} 
+                    src={`${BACKEND_URL}/${job.recruiterId?.organizationLogo}`} 
                     alt="Brand" 
-                    className="w-full h-full object-cover" // CHANGED: Now takes up the whole container
+                    className="w-full h-full object-cover" 
                   />
-                  {/* Subtle inner overlay to keep branding looking crisp */}
                   <div className="absolute inset-0 ring-1 ring-inset ring-black/5" />
                 </div>
                 
@@ -96,23 +94,32 @@ export default function RecruiterJobs() {
                 </div>
               </div>
 
-              {/* CENTER SECTION: TITLES */}
-              <div className="px-8 py-8 space-y-4">
-                <h3 className="text-3xl font-black text-white leading-tight tracking-tighter uppercase italic group-hover:text-indigo-400 transition-colors">
-                  {job.title}
-                </h3>
-                
-                <div className="flex flex-wrap gap-2 pt-2">
-                  {job.categories?.map((cat) => (
-                    <span key={cat} className="px-3 py-1 bg-slate-900 text-[8px] font-black text-slate-500 uppercase tracking-[0.2em] rounded-lg border border-slate-800 group-hover:border-indigo-500/20 group-hover:text-slate-300 transition-colors">
-                      {cat}
-                    </span>
-                  ))}
+              {/* --- CENTER SECTION: flex-grow pushes the metadata and footer down --- */}
+              <div className="px-8 py-8 flex-grow flex flex-col justify-between space-y-4">
+                <div>
+                  {/* min-h and line-clamp ensure title area is consistent */}
+                  <h3 className="text-3xl font-black text-white leading-tight tracking-tighter uppercase italic group-hover:text-indigo-400 transition-colors min-h-[4.5rem] line-clamp-2">
+                    {job.title}
+                  </h3>
+                  
+                  {/* --- CATEGORY CLAMPING --- */}
+                  <div className="flex flex-wrap gap-2 pt-4 h-20 overflow-hidden">
+                    {job.categories?.slice(0, 3).map((cat) => (
+                      <span key={cat} className="px-3 py-1 bg-slate-900 text-[8px] font-black text-slate-500 uppercase tracking-[0.2em] rounded-lg border border-slate-800 group-hover:border-indigo-500/20 group-hover:text-slate-300 transition-colors h-fit">
+                        {cat}
+                      </span>
+                    ))}
+                    {job.categories?.length > 3 && (
+                      <span className="px-3 py-1 text-[8px] font-black text-slate-700 uppercase tracking-widest self-center">
+                        +{job.categories.length - 3} MORE
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              {/* METADATA: BENTO STYLE INFOGRAPHIC */}
-              <div className="px-4 pb-4">
+              {/* METADATA: BENTO STYLE */}
+              <div className="px-4 pb-4 mt-auto">
                 <div className="grid grid-cols-2 gap-2 bg-slate-900/30 rounded-[2rem] p-4 border border-slate-800/30">
                   <MetaItem icon={<MapPin size={12}/>} label={job.location} />
                   <MetaItem icon={<Globe size={12}/>} label={job.workModel} />
@@ -123,9 +130,9 @@ export default function RecruiterJobs() {
 
               {/* ACTION FOOTER */}
               <div className="p-4 pt-0">
-                <button className="w-full py-6 bg-slate-950 border border-slate-800/80 rounded-[2rem] flex items-center justify-center gap-4 text-[11px] font-black uppercase tracking-[0.3em] group-hover:bg-indigo-600 group-hover:text-white group-hover:border-indigo-500 transition-all duration-500 group-hover:shadow-[0_10px_30px_rgba(79,70,229,0.3)]">
+                <Link href={`/api/recruiter/openings/${job._id}`}><button className="w-full py-6 bg-slate-950 border border-slate-800/80 rounded-[2rem] flex items-center justify-center gap-4 text-[11px] font-black uppercase tracking-[0.3em] group-hover:bg-indigo-600 group-hover:text-white group-hover:border-indigo-500 transition-all duration-500 group-hover:shadow-[0_10px_30px_rgba(79,70,229,0.3)]">
                   Launch Engine <Target size={18} className="group-hover:rotate-45 transition-transform duration-500" />
-                </button>
+                </button></Link>
               </div>
             </div>
           </motion.div>
@@ -135,7 +142,6 @@ export default function RecruiterJobs() {
   );
 }
 
-// Sub-component for clean metadata rendering
 function MetaItem({ icon, label }) {
   return (
     <div className="flex items-center gap-3 p-3 bg-slate-950/40 rounded-2xl border border-slate-800/50">

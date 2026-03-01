@@ -31,6 +31,7 @@ export default function CandidateSidebar() {
     { name: "Browse Jobs", href: "/api/candidate/jobs", icon: <Briefcase size={20} /> },
     { name: "Applied Jobs", href: "/api/candidate/applied", icon: <FileCheck size={20} /> },
     { name: "My Profile", href: "/api/candidate/profile", icon: <UserCircle size={20} /> },
+    { name: "Interviews", href: "/api/candidate/interviews", icon: <UserCircle size={20} /> },
   ];
 
   return (

@@ -11,6 +11,8 @@ const candidateSchema = new mongoose.Schema({
     // Personal Details
     phone: { type: String, trim: true },
     address: { type: String },
+    firstName:{type:String,required:true},
+    lastName:{type:String,required:true},
     profilePhoto: { 
         type: String,
         default:'default_pics/candidate.jpg',
