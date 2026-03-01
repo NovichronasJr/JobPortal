@@ -125,3 +125,20 @@ This file tracks all research, search queries, and AI interactions used througho
 - **Performance:** [Next.js Data Fetching, Caching, and Revalidating](https://nextjs.org/docs/app/building-your-application/data-fetching/fetching-caching-and-revalidating)
 - **Design Patterns:** [The Observer Pattern in Proactive UI](https://refactoring.guru/design-patterns/observer)
 - **Optimization:** [Lighthouse: Largest Contentful Paint (LCP) Fixes](https://web.dev/articles/lcp)
+
+
+# 📚 Research & Learning Log: Day 8
+
+| Date | Topic / Query | Source | Outcome / Decision |
+| :--- | :--- | :--- | :--- |
+| Mar 1, 2026 | Agora RTC SDK Stabilization | [Agora Docs](https://docs.agora.io/en/video-calling/get-started/get-started-sdk) | **Outcome:** Identified `RTM_ERROR_LOGIN_REJECTED (2010026)` cause. **Decision:** Bypassed the Signaling (RTM) layer for 1-on-1 sessions to avoid token complexity in testing mode, ensuring stable audio/video handshake. |
+| Mar 1, 2026 | Browser Auto-Play & Audio Context | [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/Media/Autoplay_guide) | **Bug Fix:** Resolved silent audio issue where browsers blocked remote streams. **Decision:** Implemented a "Click-to-Join" interaction to wake up the `AudioContext` and initialized `initialMicMuted: false` in RTC props. |
+| Mar 1, 2026 | Neural Notification Matrix | System Design | **Research Note:** Designed a state-aware notification engine using MongoDB `isRead` flags. **Decision:** Implemented recipient-specific filtering on the backend to prevent cross-contamination between Recruiter and Candidate nodes. |
+| Mar 1, 2026 | State-Regression Guards | UX Engineering | **Outcome:** Identified risk of status "downgrading" (e.g., Interviewing falling back to Shortlisted). **Decision:** Implemented immutability logic on decision buttons based on a hierarchical status array, locking nodes once advanced. |
+| Mar 1, 2026 | Skeleton Matrix UI Implementation | Performance Optimization | **Outcome:** Analyzed "Layout Shift" during API hydration. **Decision:** Replaced top-level loading guards with CSS-pulsed skeletons to preserve layout stability and eliminate the "double-flash" effect on the tracker page. |
+
+### Resource Links
+- **Real-Time Video:** [Agora RTC React UI Kit API Reference](https://github.com/AgoraIO-Community/agora-react-uikit)
+- **Signal Handshake:** [Understanding Agora Token Requirements](https://docs.agora.io/en/video-calling/develop/authenticate-with-tokens)
+- **System Logic:** [Mongoose Middleware for Status Cascading](https://mongoosejs.com/docs/middleware.html)
+- **UI Interaction:** [Framer Motion Layout & Exit Animations](https://www.framer.com/motion/layout/)
