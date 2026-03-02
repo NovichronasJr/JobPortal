@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
         cb(null, dest);
     },
     filename: (req, file, cb) => {
-        // Use timestamp to avoid name collisions
+        
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
     }
@@ -26,7 +26,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ 
     storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    limits: { fileSize: 5 * 1024 * 1024 }, // <----5MB LIMIT
     fileFilter: (req, file, cb) => {
         const filetypes = /jpeg|jpg|png|pdf/;
         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());

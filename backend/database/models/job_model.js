@@ -7,7 +7,7 @@ const JobSchema = new mongoose.Schema({
         required: true
     },
     title: { type: String, required: true, trim: true },
-    description: { type: String, required: true }, // Rich text from your editor
+    description: { type: String, required: true }, 
     skills: [{ type: String }],
     categories: [{ type: String }],
     experience: { type: String },
@@ -25,7 +25,6 @@ const JobSchema = new mongoose.Schema({
     stipend: { type: String },
     closingDate: { type: Date, required: true },
     
-    // --- AI STRATEGY SYNC (Secret Fields) ---
     aiWeightage: {
         hiddenSkills: [{ type: String }],
         accommodateFresher: { type: String },

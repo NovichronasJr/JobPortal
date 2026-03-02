@@ -9,13 +9,9 @@ const Interview = require('../database/models/interview_model');
 const Notification = require('../database/models/notification_model');
 const upload = require('../configs/multer_config');
 const { protect } = require('../middleware/middleware');
-const { analyzeResumeSkills } = require('../services/llmservice'); // Your Mistral Logic
+const { analyzeResumeSkills } = require('../services/llmservice'); 
 
-/**
- * @route   PUT /api/candidate/update-profile
- * @desc    Sync profile metadata (Bio, Skills, Slider Experience, Education) and handle assets
- * @access  Private
- */
+
 router.put('/update-profile', protect, upload.fields([
     { name: 'profilephoto', maxCount: 1 },
     { name: 'resume', maxCount: 1 }
@@ -26,28 +22,26 @@ router.put('/update-profile', protect, upload.fields([
 
         if (!candidate) return res.status(404).json({ message: "Candidate not found." });
 
-        // --- 1. PREPARE METADATA ---
+        
         const { bio, phone, address, skills, education, experienceYears } = req.body;
         
         let updateData = { bio, phone, address };
 
-        // Handle Experience Years (Convert Slider String to Number)
+        
         if (experienceYears !== undefined) {
             updateData.experienceYears = Number(experienceYears);
         }
 
-        // Handle JSON Arrays (Skills & Education)
         try {
             if (skills) updateData.skills = JSON.parse(skills);
             if (education) updateData.education = JSON.parse(education);
         } catch (e) {
             console.error("JSON Parsing Error for arrays:", e.message);
-            // Fallback: If parsing fails, we keep existing data or use raw if already array
             if (skills) updateData.skills = Array.isArray(skills) ? skills : updateData.skills;
             if (education) updateData.education = Array.isArray(education) ? education : updateData.education;
         }
 
-        // --- 2. PHOTO LOGIC (REPLACE & PURGE) ---
+        
         if (req.files && req.files['profilephoto']) {
             const newPhotoPath = `candidate/profilephoto/${req.files['profilephoto'][0].filename}`;
 
@@ -58,7 +52,6 @@ router.put('/update-profile', protect, upload.fields([
             updateData.profilePhoto = newPhotoPath;
         }
 
-        // --- 3. RESUME LOGIC (REPLACE, PURGE & AI BRAIN) ---
         if (req.files && req.files['resume']) {
             const newResumePath = `candidate/resume/${req.files['resume'][0].filename}`;
 
@@ -68,18 +61,15 @@ router.put('/update-profile', protect, upload.fields([
             }
             updateData.resumeUrl = newResumePath;
 
-            // Trigger Day 6 AI Extraction (LangChain + Mistral)
             try {
                 const extractedSkills = await analyzeResumeSkills(newResumePath);
                 updateData.skills = extractedSkills; 
                 updateData.isProfileComplete = true;
             } catch (aiError) {
                 console.error("AI Skill Extraction Failed:", aiError.message);
-                // Fallback: Keep profile update going even if AI fails
             }
         }
 
-        // --- 4. EXECUTE ATOMIC UPDATE ---
         const updatedProfile = await Candidate.findOneAndUpdate(
             { user: userId },
             { $set: updateData },
@@ -101,16 +91,16 @@ router.put('/update-profile', protect, upload.fields([
     }
 });
 
-// controllers/jobController.js or inside your routes file
+
 
 router.get('/allJobs', protect, async (req, res) => {
     try {
         const all_jobs = await Job.find()
             .populate('recruiterId','organizationName organizationLogo') 
             .sort({ createdAt: -1 })
-            .lean(); // Converts to plain JS objects for 2x faster performance
+            .lean(); 
 
-        // 4. Verification Check: Are there any jobs?
+        
         if (!all_jobs || all_jobs.length === 0) {
             return res.status(200).json({ 
                 success: true, 
@@ -119,7 +109,7 @@ router.get('/allJobs', protect, async (req, res) => {
             });
         }
 
-        // 5. Standardized Success Response for CandidateJobContext
+        
         return res.status(200).json({
             success: true,
             count: all_jobs.length,
@@ -138,14 +128,13 @@ router.get('/allJobs', protect, async (req, res) => {
 
 router.post('/applyJob', protect, async (req, res) => {
     try {
-        // Taking candidateId from body as requested
+        
         const { jobId, candidateId, aiScore } = req.body;
 
         if (!jobId || !candidateId) {
             return res.status(400).json({ success: false, message: "Sync Error: Node identifiers missing." });
         }
 
-        // Initialize Application
         const newApplication = new Application({
             jobId,
             candidateId,
@@ -169,16 +158,12 @@ router.post('/applyJob', protect, async (req, res) => {
     }
 });
 
-// GET: /api/applications/my-applications/:candidateId
+
 router.get('/my-applications/:candidateId', protect, async (req, res) => {
     try {
         const { candidateId } = req.params;
         const userIdFromCookie = req.user.id;
 
-        // --- THE SECURITY CHECK ---
-        // Since we can't trust the URL alone, we check if the Candidate profile 
-        // exists and is actually linked to the User ID from our secure cookie.
-        // We assume your Candidate model has a field like 'userId'
         const candidateProfile = await Candidate.findOne({ 
             _id: candidateId, 
             user: userIdFromCookie 
@@ -191,7 +176,6 @@ router.get('/my-applications/:candidateId', protect, async (req, res) => {
             });
         }
 
-        // --- FETCH THE APPLICATIONS ---
         const applications = await Application.find({ candidateId })
             .populate({
                 path: 'jobId',
@@ -216,13 +200,9 @@ router.get('/my-applications/:candidateId', protect, async (req, res) => {
 });
 
 
-/**
- * @route   GET /api/candidate/my-interviews
- * @desc    Fetch all scheduled interviews for the logged-in candidate
- */
 router.get('/my-interviews', protect,  async (req, res) => {
     try {
-        // 1. Resolve Candidate Identity from the User ID in the cookie
+        
         const candidateProfile = await Candidate.findOne({ user: req.user.id });
         
         if (!candidateProfile) {
@@ -232,14 +212,13 @@ router.get('/my-interviews', protect,  async (req, res) => {
             });
         }
 
-        // 2. Fetch Interviews
-        // We populate jobId and recruiterId to show the company and the person's name
+        
         const interviews = await Interview.find({ 
             candidateId: candidateProfile._id 
         })
         .populate({
             path: 'jobId',
-            select: 'title companyName' // Check if your Job model has companyName!
+            select: 'title companyName' 
         })
         .populate({
             path: 'recruiterId',
@@ -254,7 +233,7 @@ router.get('/my-interviews', protect,  async (req, res) => {
         });
 
     } catch (error) {
-        // This log will show up in your backend terminal
+        
         console.error("CRITICAL: Candidate Matrix Sync Error:", error);
         res.status(500).json({ 
             success: false, 
@@ -267,7 +246,7 @@ router.get('/my-interviews', protect,  async (req, res) => {
 
 router.get("/my-notifications", protect, async (req, res) => {
     try {
-        // Find all notifications where the recipient is the logged-in user
+        
 
         const candidate = await Candidate.findOne({user:req.user.id});
         if(!candidate)return res.status(400).json({message:"access prohibited"});
@@ -275,8 +254,8 @@ router.get("/my-notifications", protect, async (req, res) => {
             recipient: candidate.id,
             isRead:false
         })
-        .sort({ createdAt: -1 }) // Newest first
-        .limit(20); // Keep the matrix lean
+        .sort({ createdAt: -1 }) 
+        .limit(20); 
 
         res.status(200).json({
             success: true,

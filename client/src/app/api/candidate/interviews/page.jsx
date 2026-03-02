@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Clock, Video, Lock, BrainCircuit, 
-  Sparkles, User, CheckCircle2, ShieldCheck,
+   Video, Lock, BrainCircuit, 
+  User, CheckCircle2, ShieldCheck,
   Calendar, Loader2
 } from "lucide-react";
 

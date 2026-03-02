@@ -16,14 +16,12 @@ const model = new ChatMistralAI({
   temperature: 0,
 });
 
-/**
- * The Brain: Takes a file path, extracts skills using LangChain + Mistral
- */
+
 const analyzeResumeSkills = async (relativeFilePath) => {
   try {
     const absolutePath = path.resolve("public", relativeFilePath);
 
-    // 1. Load and Split
+    
     const loader = new PDFLoader(absolutePath);
     const rawDocs = await loader.load();
 
@@ -34,30 +32,16 @@ const analyzeResumeSkills = async (relativeFilePath) => {
 
     const splitDocs = await splitter.splitDocuments(rawDocs);
 
-    // 2. Create Temporary Vector Store
+    
     const vectorStore = new MemoryVectorStore(embeddings);
     await vectorStore.addDocuments(splitDocs);
 
-    // 3. Similarity Search for Skills context
+    
     const relevantDocs = await vectorStore.similaritySearch(
       "Technical Skills, Programming Languages, Frameworks, Tools, Soft Skills",
       3
     );
     const context = relevantDocs.map((d) => d.pageContent).join("\n---\n");
-
-    // 4. LLM Query
-    // const prompt = `
-    //     You are a professional resume parser. Extract a clean list of skills from the text.
-
-    //     RULES:
-    //     - Extract technologies (React, Node.js), concepts (DSA, Problem Solving), and soft skills (Leadership).
-    //     - Exclude academic subjects like "Calculus" or "Discrete Maths".
-    //     - Return ONLY a comma-separated list.
-
-    //     RESUME CONTEXT:
-    //     ${context}
-
-    //     CLEAN SKILLS LIST:`;
 
     const prompt = `
         You are a resume parser. Your goal is to find the "Skills" or "Technical Skills" section 
@@ -78,7 +62,7 @@ const analyzeResumeSkills = async (relativeFilePath) => {
 
     const response = await model.invoke(prompt);
 
-    // 5. Convert comma-separated string to Array for MongoDB
+    
     const skillsString = response.content.replace(/\n/g, " ").trim();
     const skillsArray = skillsString
       .split(",")

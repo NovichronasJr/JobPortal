@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 
 const recruiterSchema = new mongoose.Schema({
-    // Link to the base User (Email, Password, Role)
+    
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
     
-    // Organization Identity
+    
     organizationName: { 
         type: String, 
         required: true, 
@@ -23,7 +23,7 @@ const recruiterSchema = new mongoose.Schema({
         trim: true 
     },
     
-    // Professional Details
+    
     position: { 
         type: String, 
         placeholder: "e.g., Senior Technical Recruiter" 
@@ -32,17 +32,17 @@ const recruiterSchema = new mongoose.Schema({
         type: String 
     },
     
-    // Verification & Decision Data
+    
     isVerified: { 
         type: Boolean, 
         default: false 
-    }, // High-value for "Decision" security
+    }, 
     activeJobsCount: { 
         type: Number, 
         default: 0 
     },
 
-    // Metadata
+    
     joinedAt: { 
         type: Date, 
         default: Date.now 

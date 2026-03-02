@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const notificationSchema = new mongoose.Schema({
   recipient: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Candidate", // Points to the User (Candidate)
+    ref: "Candidate", 
     required: true,
   },
   title: { type: String, required: true },
@@ -14,7 +14,7 @@ const notificationSchema = new mongoose.Schema({
     default: "Shortlist" 
   },
   isRead: { type: Boolean, default: false },
-  link: { type: String }, // URL to redirect (e.g., /dashboard/interviews)
+  link: { type: String }, 
 }, { timestamps: true });
 
 module.exports = mongoose.model("Notification", notificationSchema);

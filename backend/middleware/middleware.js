@@ -3,14 +3,13 @@ const User = require('../database/models/user_model');
 
 const protect = async (req, res, next) => {
     try {
-        // 1. Get the big 'COOKIE' string
+        
         const cookieData = req.cookies?.COOKIE; 
 
         if (!cookieData) {
             return res.status(401).json({ message: "No session found." });
         }
 
-        // 2. Parse the JSON string to get the token inside
         const parsedData = JSON.parse(cookieData);
         const token = parsedData.token;
 
@@ -18,7 +17,6 @@ const protect = async (req, res, next) => {
             return res.status(401).json({ message: "Token missing from session." });
         }
 
-        // 3. Verify the actual token string
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = await User.findById(decoded.id).select('-password');
         
@@ -31,7 +29,7 @@ const protect = async (req, res, next) => {
 
 const authorize = (...roles) => {
     return (req, res, next) => {
-        // req.user was set by your 'protect' middleware
+        
         if (!req.user) {
             return res.status(401).json({ 
                 success: false, 
@@ -39,7 +37,6 @@ const authorize = (...roles) => {
             });
         }
 
-        // Check if the user's role is included in the allowed roles array
         if (!roles.includes(req.user.role)) {
             return res.status(403).json({ 
                 success: false, 

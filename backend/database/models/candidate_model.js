@@ -8,7 +8,6 @@ const candidateSchema = new mongoose.Schema({
         required: true
     },
     
-    // Personal Details
     phone: { type: String, trim: true },
     address: { type: String },
     firstName:{type:String,required:true},
@@ -18,16 +17,16 @@ const candidateSchema = new mongoose.Schema({
         default:'default_pics/candidate.jpg',
     }, 
     
-    // Professional Identity
+    
     bio: { 
         type: String, 
         maxLength: 500, 
         default: "Software enthusiast looking for the next big challenge." 
     },
-    skills: [{ type: String }], // e.g. ["React", "Node.js", "Cybersecurity"]
+    skills: [{ type: String }], 
     
-    // The "Decision" Data
-    resumeUrl: { type: String }, // Path to the uploaded PDF
+    
+    resumeUrl: { type: String }, 
     experienceYears: { type: Number, default: 0 },
     education: [{
         institution: String,
@@ -35,7 +34,7 @@ const candidateSchema = new mongoose.Schema({
         year: Number
     }],
 
-    // System Metadata
+    
     isProfileComplete: { type: Boolean, default: false }
 }, { timestamps: true });
 

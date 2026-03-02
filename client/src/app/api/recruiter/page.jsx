@@ -4,9 +4,9 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import { useRecruiterJob } from "@/context/RecruiterJobContext"; // <--- CONSUMING CONTEXT
 import { 
-  Sparkles, Zap, Target, ArrowRight, 
-  BrainCircuit, Clock, Loader2, Info, TrendingUp,
-  Briefcase, Users, Star, LayoutDashboard
+  Sparkles, Zap,ArrowRight, 
+  BrainCircuit,Loader2,TrendingUp,
+  Briefcase, Users, Star, 
 } from "lucide-react";
 import Link from "next/link";
 
@@ -123,7 +123,7 @@ export default function RecruiterDashboard() {
         <motion.div variants={itemVariants} className="lg:col-span-2 space-y-8">
           <div className="flex items-center justify-between px-2">
             <h2 className="text-2xl font-bold text-white flex items-center gap-3 italic uppercase tracking-tighter">Decision Stream <Sparkles size={22} className="text-indigo-500" /></h2>
-            <Link href="/recruiter/pipeline-hub" className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-indigo-400 flex items-center gap-2">Manage Pipeline <ArrowRight size={14} /></Link>
+            <Link href="/api/recruiter/shortlisted" className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-indigo-400 flex items-center gap-2">Manage Pipeline <ArrowRight size={14} /></Link>
           </div>
           <div className="space-y-4">
             {decisionStream.length > 0 ? decisionStream.map((app) => (
@@ -146,7 +146,7 @@ export default function RecruiterDashboard() {
             <p className="text-slate-400 text-sm leading-relaxed italic mb-6">
               AI suggests reviewing **{decisionStream[0]?.candidateId?.firstName || 'MERN'}**’s profile. Their match score indicates they are a high-tier asset for your current openings.
             </p>
-            <Link href="/recruiter/post-job" className="block w-full py-5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl text-center text-[10px] font-black uppercase tracking-widest shadow-xl shadow-indigo-600/20">Post New Node</Link>
+            <Link href="/api/recruiter/postjob" className="block w-full py-5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl text-center text-[10px] font-black uppercase tracking-widest shadow-xl shadow-indigo-600/20">Post New Node</Link>
           </div>
         </motion.aside>
       </div>
@@ -191,7 +191,7 @@ function ApplicantCard({ applicant, backendUrl }) {
           <p className="text-[10px] text-slate-600 uppercase font-black tracking-widest mb-1">AI Match</p>
           <span className="text-emerald-400 font-black text-2xl italic tracking-tighter">{applicant.aiScore}%</span>
         </div>
-        <Link href={`/recruiter/pipeline-hub`} className="w-12 h-12 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-slate-600 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+        <Link href={`/api/recruiter/shortlisted`} className="w-12 h-12 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center text-slate-600 group-hover:bg-indigo-600 group-hover:text-white transition-all">
           <ArrowRight size={24} />
         </Link>
       </div>

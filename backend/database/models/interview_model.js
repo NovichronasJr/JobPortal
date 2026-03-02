@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const interviewSchema = new mongoose.Schema({
   applicationId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Application", // Points to your application_model
+    ref: "Application", 
     required: true,
   },
   candidateId: {
@@ -29,7 +29,7 @@ const interviewSchema = new mongoose.Schema({
     enum: ["Scheduled", "Completed", "Cancelled"], 
     default: "Scheduled" 
   },
-  meetingLink: { type: String }, // Optional: fallback link
+  meetingLink: { type: String }, 
 }, { timestamps: true });
 
 module.exports = mongoose.model("Interview", interviewSchema);

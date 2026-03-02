@@ -20,10 +20,10 @@ router.post("/newJob", protect, authorize("recruiter"), async (req, res) => {
       location,
       stipend,
       closingDate,
-      aiWeightage, // This contains hiddenSkills, accommodateFresher, maxPositions
+      aiWeightage, 
     } = req.body;
 
-    // 1. Validation check for essential fields
+    
     if (!title || !description || !closingDate) {
       return res.status(400).json({
         success: false,
@@ -32,23 +32,23 @@ router.post("/newJob", protect, authorize("recruiter"), async (req, res) => {
       });
     }
 
-    // 2. Create the new Job document
+    
     const recruiter = await recruiter_model.findOne({ user: req.user.id });
     const recruiterId = recruiter._id;
 
     const newJob = new Job({
-      recruiterId, // Taken from the 'protect' middleware
+      recruiterId, 
       title,
       description,
       skills,
       categories,
       experience,
-      workModel: type, // Mapping 'type' from React state to 'workModel' in Schema
+      workModel: type, 
       workType,
       location,
       stipend,
       closingDate,
-      aiWeightage, // Directly storing the secret strategy fields
+      aiWeightage, 
       status: "active",
     });
 
@@ -70,53 +70,71 @@ router.post("/newJob", protect, authorize("recruiter"), async (req, res) => {
   }
 });
 
+
+
 router.get("/addedjobs", protect, authorize("recruiter"), async (req, res) => {
   try {
     const user_id = req.user.id;
-
-    // 1. Find the recruiter profile
     const recruiter = await recruiter_model.findOne({ user: user_id });
 
-    // 2. Safety check: Prevent server crash if recruiter profile is missing
-    if (!recruiter) {
-      return res.status(404).json({
-        success: false,
-        message: "Recruiter profile not found for this user.",
-      });
-    }
+    if (!recruiter) return res.status(404).json({ success: false, message: "Profile missing." });
 
-    const recruiterId = recruiter._id;
+    const recruiterJobs = await Job.aggregate([
+      { $match: { recruiterId: recruiter._id } },
+      {
+        $lookup: {
+          from: "applications", 
+          localField: "_id",
+          foreignField: "jobId",
+          as: "applicantNodes"
+        }
+      },
+      {
+        $addFields: {
+          applicantCount: { $size: "$applicantNodes" },
+          maxSeats: "$aiWeightage.maxPositions", 
+          recruiterId: recruiter 
+        }
+      },
+      { $sort: { createdAt: -1 } }
+    ]);
 
-    // 3. Find jobs and use .lean() for better performance (it returns plain JS objects)
-    const recruiterJobs = await Job.find({ recruiterId })
-      .populate("recruiterId")
-      .sort({ createdAt: -1 });
-
-    // 4. Return as an array inside a success object
     return res.status(200).json({
       success: true,
       count: recruiterJobs.length,
-      jobs: recruiterJobs, // This keeps it as an array []
+      jobs: recruiterJobs, 
     });
   } catch (error) {
-    console.error("Fetch Error:", error.message);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to retrieve openings.",
-      error: error.message,
-    });
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.patch("/extend-job/:id", protect, async (req, res) => {
+  try {
+      const { newClosingDate } = req.body;
+      
+      const updatedJob = await Job.findByIdAndUpdate(
+          req.params.id,
+          { closingDate: newClosingDate },
+          { new: true }
+      );
+
+      res.status(200).json({
+          success: true,
+          message: "Sync window successfully extended.",
+          updatedJob
+      });
+  } catch (error) {
+      res.status(500).json({ success: false, error: error.message });
   }
 });
 
 
-// GET: /api/recruiter/applications/:jobId
 router.get('/applications/:jobId', protect, authorize("recruiter"), async (req, res) => {
     try {
         const { jobId } = req.params;
         const userIdFromCookie = req.user.id;
 
-        // 1. BRIDGE: Find the Recruiter entity linked to this User ID
-        // Your recruiter_model has a 'user' field pointing to the User schema
         const recruiterProfile = await recruiter_model.findOne({ user: userIdFromCookie });
         
         if (!recruiterProfile) {
@@ -126,14 +144,14 @@ router.get('/applications/:jobId', protect, authorize("recruiter"), async (req, 
             });
         }
 
-        // 2. VERIFY: Ensure this Job Node belongs to the specific Recruiter ID
+        
         const job = await job_model.findById(jobId);
         
         if (!job) {
             return res.status(404).json({ success: false, message: "Job requisition not found." });
         }
 
-        // We compare the job's recruiterId with our fetched recruiterProfile._id
+        
         if (job.recruiterId.toString() !== recruiterProfile._id.toString()) {
             return res.status(403).json({ 
                 success: false, 
@@ -141,14 +159,12 @@ router.get('/applications/:jobId', protect, authorize("recruiter"), async (req, 
             });
         }
 
-        // 3. FETCH & RANK: Get applicants and sort by AI Decision Score
         const applications = await application_model.find({ jobId })
             .populate({
                 path: 'candidateId',
-                // Selecting specific high-signal fields for the Recruiter UI
                 select: 'firstName lastName profilePhoto skills experienceYears bio education resumeUrl' 
             })
-            .sort({ aiScore: -1 }); // Rank by the AI Score calculated at 'Apply'
+            .sort({ aiScore: -1 });
 
         res.status(200).json({
             success: true,
@@ -167,18 +183,13 @@ router.get('/applications/:jobId', protect, authorize("recruiter"), async (req, 
     }
 });
 
-/**
- * @route   PATCH /api/recruiter/applications/status/:appId
- * @desc    Update application status (Shortlist/Reject)
- * @access  Private (Recruiter Only)
- */
+
 router.patch('/applications/status/:appId', protect, authorize("recruiter"), async (req, res) => {
   try {
       const { appId } = req.params;
-      const { status } = req.body; // Expecting "Shortlisted" or "Rejected"
+      const { status } = req.body; 
       const userIdFromCookie = req.user.id;
 
-      // 1. INPUT VALIDATION
       const validStatuses = ["Shortlisted", "Rejected", "Pending", "Applied"];
       if (!validStatuses.includes(status)) {
           return res.status(400).json({ 
@@ -187,20 +198,16 @@ router.patch('/applications/status/:appId', protect, authorize("recruiter"), asy
           });
       }
 
-      // 2. FETCH APPLICATION & BRIDGE TO JOB
-      // We need the jobId to verify if the recruiter owns this application
       const application = await application_model.findById(appId);
       if (!application) {
           return res.status(404).json({ success: false, message: "Application node not found." });
       }
 
-      // 3. FETCH RECRUITER IDENTITY
       const recruiterProfile = await recruiter_model.findOne({ user: userIdFromCookie });
       if (!recruiterProfile) {
           return res.status(404).json({ success: false, message: "Recruiter entity not found." });
       }
 
-      // 4. VERIFY OWNERSHIP VIA JOB NODE
       const job = await job_model.findById(application.jobId);
       if (!job || job.recruiterId.toString() !== recruiterProfile._id.toString()) {
           return res.status(403).json({ 
@@ -209,7 +216,6 @@ router.patch('/applications/status/:appId', protect, authorize("recruiter"), asy
           });
       }
 
-      // 5. COMMIT THE DECISION
       application.status = status;
       await application.save();
 
@@ -240,19 +246,13 @@ router.patch('/applications/status/:appId', protect, authorize("recruiter"), asy
 });
 
 
-// GET: /api/recruiter/pipeline
 router.get('/pipeline', protect, authorize("recruiter"), async (req, res) => {
   try {
       const userId = req.user.id;
-
-      // 1. Resolve Recruiter Identity
       const recruiterProfile = await recruiter_model.findOne({ user: userId });
       if (!recruiterProfile) return res.status(404).json({ success: false, message: "Recruiter node not found." });
 
-      // 2. Fetch Jobs belonging to this Recruiter
       const jobs = await job_model.find({ recruiterId: recruiterProfile._id }).select('title location');
-
-      // 3. Fetch all Shortlisted Applications for these jobs
       const pipeline = await application_model.find({ 
           jobId: { $in: jobs.map(j => j._id) },
           status: { $in: ["Shortlisted", "Interviewing"] }
@@ -266,7 +266,7 @@ router.get('/pipeline', protect, authorize("recruiter"), async (req, res) => {
       res.status(200).json({
           success: true,
           count: pipeline.length,
-          pipeline // This is your array of shortlisted applications
+          pipeline 
       });
 
   } catch (error) {
@@ -275,19 +275,19 @@ router.get('/pipeline', protect, authorize("recruiter"), async (req, res) => {
 });
 
 
-// POST: /api/recruiter/interviews/schedule
+
 router.post('/interviews/schedule', protect, authorize("recruiter"), async (req, res) => {
   try {
       const { applicationId, scheduledTime, title } = req.body;
 
-      // 1. Fetch Application to get context
+      
       const app = await application_model.findById(applicationId);
       if (!app) return res.status(404).json({ success: false, message: "Application not found." });
 
-      // 2. Resolve Recruiter Identity
+      
       const recruiterProfile = await recruiter_model.findOne({ user: req.user.id });
 
-      // 3. CREATE THE INTERVIEW NODE
+     
       const newInterview = await interview_model.create({
           applicationId,
           candidateId: app.candidateId,
@@ -295,10 +295,9 @@ router.post('/interviews/schedule', protect, authorize("recruiter"), async (req,
           jobId: app.jobId,
           title: title || "Neural Sync Session",
           scheduledTime,
-          agoraChannel: `sync_${applicationId}_${Date.now()}` // Unique channel
+          agoraChannel: `sync_${applicationId}_${Date.now()}` 
       });
 
-      // 4. Update Application Status to 'Interviewing'
       app.status = "Interviewing";
       await app.save();
 
@@ -313,7 +312,7 @@ router.post('/interviews/schedule', protect, authorize("recruiter"), async (req,
         title: "Interview Node Active",
         message: `A Live Sync has been scheduled for ${title} on ${new Date(scheduledTime).toLocaleString()}.`,
         type: "Interview",
-        link: "/api/candidate/interviews" // Link to their specific interview matrix
+        link: "/api/candidate/interviews" 
     });
 
   } catch (error) {
@@ -324,8 +323,6 @@ router.post('/interviews/schedule', protect, authorize("recruiter"), async (req,
 router.get('/my-interviews', protect, authorize("recruiter"), async (req, res) => {
   try {
       const userIdFromCookie = req.user.id;
-
-      // 1. Resolve the Recruiter Identity
       const recruiterProfile = await recruiter_model.findOne({ user: userIdFromCookie });
       
       if (!recruiterProfile) {
@@ -335,8 +332,6 @@ router.get('/my-interviews', protect, authorize("recruiter"), async (req, res) =
           });
       }
 
-      // 2. Fetch all interviews associated with this Recruiter
-      // We populate candidateId to get name/photo and jobId to get the title
       const interviews = await interview_model.find({ 
           recruiterId: recruiterProfile._id 
       })
@@ -348,7 +343,7 @@ router.get('/my-interviews', protect, authorize("recruiter"), async (req, res) =
           path: 'jobId',
           select: 'title'
       })
-      .sort({ scheduledTime: 1 }); // Show the most urgent/upcoming interviews first
+      .sort({ scheduledTime: 1 }); 
 
       res.status(200).json({
           success: true,
@@ -376,7 +371,6 @@ router.patch('/interviews/complete/:interviewId', protect, authorize("recruiter"
 
       if (!interview) return res.status(404).json({ success: false, message: "Interview node not found." });
 
-      // Optional: Notify the candidate that the session is officially closed
       await notification_model.create({
           recipient: interview.candidateId,
           title: "Sync Session Closed",

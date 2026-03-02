@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Calendar, Users, Target, Clock, ArrowRight, 
-  BrainCircuit, Mail, MapPin, Sparkles, Filter,
-  X, Video, Lock, Loader2, Info, CheckCircle2, ShieldCheck
+  Calendar,Clock,  
+  BrainCircuit,
+  X, Video, Lock, Loader2,CheckCircle2,
 } from "lucide-react";
 
 // --- 1. DYNAMIC AGORA IMPORT ---
